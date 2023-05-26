@@ -1,0 +1,44 @@
+##Heads or Tails
+
+# import random
+
+# choice = input("Heads or Tails?").lower()
+
+# bruv = random.randint(1, 2)
+# if choice == "h" and bruv == 1:
+#     print("Heads. You win!")
+# elif choice == "t" and bruv == 2:
+#         print("Tails. You win!")
+# elif choice == "t" and bruv == 1:
+#       print("Heads. You lose :(")
+# else:
+#     print("Tails. You lose :(")
+
+##Banker Roulette
+
+# import random
+
+# names = input('Type the names of the people seperate by a "," :\n')
+# name_list = names.split(", ")
+
+# len_name = len(name_list)
+# random_no = random.randint(0, len_name-1)
+# payer = name_list[random_no]
+# print("\nThe one who is going to pay is .... "+payer)
+
+##Treasure Map
+
+row1 = ["🔳","🔳","🔳"]
+row2 = ["🔳","🔳","🔳"]
+row3 = ["🔳","🔳","🔳"]
+map = [row1, row2, row3]
+print(f"{row1}\n{row2}\n{row3}")
+position = input("Where do you want to put the treasure?\n")
+
+column_int = int(position[0])
+row_int = int(position[1])
+Xrow = map[column_int - 1]
+Xrow[row_int - 1] = "X"
+
+print(f"{row1}\n{row2}\n{row3}")
+
