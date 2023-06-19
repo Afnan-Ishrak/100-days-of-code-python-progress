@@ -33,25 +33,22 @@ def blackjack():
 
     computer_cardhand = []
     computer_suithand = []
-    def comp_draw():
-        comp_card_drawn = random.choice(ranks)
-        comp_suit_drawn = random.choice(suits)
-        computer_cardhand.append(comp_card_drawn)
-        computer_suithand.append(comp_suit_drawn)
-    comp_draw()
-        
+    player_cards_draw = []   
+    player_suits_draw = []
 
-    def draw_cards(number):
-        suits_draw = []
-        cards_draw = []
+    def draw_cards(number, card, suit):
+        card = []
+        suit = []
         for x in range(number):
             suit_drawn = random.choice(suits)
             card_drawn = random.choice(ranks)
-            cards_draw.append(card_drawn)
-            suits_draw.append(suit_drawn)
-        return cards_draw, suits_draw
+            card.append(card_drawn)
+            suit.append(suit_drawn)
+        return card, suit
 
-    cards_drawn_1, suit_drawn1 = draw_cards(2)
+    player_cards_drawn, player_suit_drawn = draw_cards(2, player_cards_draw, player_suits_draw)
+
+    computer_cards_drawn, computer_suit_drawn = draw_cards(1, computer_cardhand, computer_suithand)
 
     def value_calc(value_card):
         values_drawn_1 = [value[ranks.index(card)] for card in value_card]
@@ -64,68 +61,54 @@ def blackjack():
             ace = False
         return sum
 
-
-    # print(f"Your hand is \n{cards_drawn_1[0]} of {suit_drawn1[0]} \nand \n{cards_drawn_1[1]} of {suit_drawn1[1]}")
-
-    # print("*"*40, f"\nComputer's Hand is \n{computer_cardhand[0]} of {computer_suithand[0]} \nand \n***** of *****")
-
-    def hit():
-        hits = draw_cards(1)
+    def hit(card_draw, suit_draw, card_drawn, suit_drawn, player_cards_draw):
+        hits = draw_cards(1, card_draw, suit_draw)
         new_card, new_suit = hits
-        print(f"\nYour new card is {new_card[0]} of {new_suit[0]}")
-        cards_drawn_1.append(new_card[0]), suit_drawn1.append(new_suit[0])
-        return cards_drawn_1, suit_drawn1
+        if player_cards_draw is not None:
+            print(f"\nYour new card is {new_card[0]} of {new_suit[0]}")
+        card_drawn.append(new_card[0]), suit_drawn.append(new_suit[0])
+        return card_drawn, suit_drawn
 
     def card_review(player_score, comp_score):
         print("\nYour cards are:\n")
-        for x in cards_drawn_1:
-            suit_index = cards_drawn_1.index(x)
-            print(f"{x} of {suit_drawn1[suit_index]}")
+        for x in player_cards_drawn:
+            suit_index = player_cards_drawn.index(x)
+            print(f"{x} of {player_suit_drawn[suit_index]}")
         print(f"Player Score : '{player_score}'")
         print("*"*40)
         print("Computer's cards are:\n")
-        for x in computer_cardhand:
-            suit_index = computer_cardhand.index(x)
-            print(f"{x} of {computer_suithand[suit_index]}")
+        for x in computer_cards_drawn:
+            suit_index = computer_cards_drawn.index(x)
+            print(f"{x} of {computer_suit_drawn[suit_index]}")
         print(f"Computer Score : '{comp_score}'")
 
-    def hit_stand():
-        hit_stand = input("Do you want to Hit(h) or Stand(s)?\n").lower()
-        return hit_stand
-
-
-    player_hand_value = value_calc(cards_drawn_1)
-    comp_hand_value = value_calc(computer_cardhand)
-    bust = False
-
+    player_hand_value = value_calc(player_cards_drawn)
+    comp_hand_value = value_calc(computer_cards_drawn)
     card_review(player_hand_value, comp_hand_value)
-
-    val_hand = value_calc(cards_drawn_1)
-    bj = True
-    if val_hand == 21:
-        bj = False
+    bj = False
+    if player_hand_value == 21:
+        bj = True
         print("You hit BLACKJACK!!!. You win! 🤑🎉")
-
     hs_input = ""
     while player_hand_value < 21 and hs_input != "s":
-        hs_input = hit_stand()
+        hs_input = input("Do you want to Hit(h) or Stand(s)?\n").lower()
         if hs_input == "h":
-            hit()
+            hit(player_cards_draw, player_suits_draw, player_cards_drawn, player_suit_drawn, 0)
 
-        if hs_input == "s":
-            while comp_hand_value <= 17:
-                comp_draw()
-                comp_hand_value = value_calc(computer_cardhand)
+        elif hs_input == "s":
+            while comp_hand_value < 17:
+                var = None
+                hit(computer_cardhand, computer_suithand, computer_cards_drawn, computer_suit_drawn, var)
+                comp_hand_value = value_calc(computer_cards_drawn)
                 
-        player_hand_value = value_calc(cards_drawn_1)
-        comp_hand_value = value_calc(computer_cardhand)
+        player_hand_value = value_calc(player_cards_drawn)
+        comp_hand_value = value_calc(computer_cards_drawn)
         card_review(player_hand_value, comp_hand_value)
         
     if player_hand_value > 21:
         print("Yikes. you busted! 😬")
-        bust = True
 
-    if comp_hand_value < 21 and player_hand_value > comp_hand_value and bust != True and bj:
+    if comp_hand_value < 21 and player_hand_value > comp_hand_value and player_hand_value <= 21 and bj == False:
         print("Congratulations! You Win. 😤")
 
     if comp_hand_value > 21:
@@ -138,12 +121,11 @@ def blackjack():
         print("Sorry. You lost. 😰")
 
 blackjack()
-replay = input("Do you want to play another game of blackjack?\n").lower()
 stop_game = False
-while stop_game == False and replay == "yes" or replay == "y":
+while stop_game == False:
+    replay = input("Do you want to play another game of blackjack?\n").lower()
     cls()
     blackjack()
-    replay = input("Do you want to play another game of blackjack?\n").lower()
     if replay == "no" or replay == "n":
         print("Thank you for playing with us! 😉")
         stop_game = True
